@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Photo Culler</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="bg-shape bg-shape-a" aria-hidden="true"></div>
+  <div class="bg-shape bg-shape-b" aria-hidden="true"></div>
+
+  <main class="app">
+    <header class="topbar">
+      <div>
+        <h1>Photo Culler</h1>
+        <p class="muted">Slice 1: keep, skip, transfer</p>
+      </div>
+      <div class="actions">
+        <input id="folderInput" type="file" webkitdirectory directory multiple accept=".jpg,.jpeg,image/jpeg" hidden>
+        <button id="openBtn" class="btn btn-primary">Open Folder</button>
+        <button id="transferBtn" class="btn">Transfer</button>
+        <button id="exitBtn" class="btn btn-danger">Exit</button>
+      </div>
+    </header>
+
+    <section class="viewer">
+      <div id="imageStage" class="image-stage">
+        <canvas id="photoCanvas" aria-label="Current photo"></canvas>
+        <div id="emptyState" class="empty-state">
+          <h2>Open a camera folder to start</h2>
+          <p>JPEG files are loaded locally in your browser.</p>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div id="statusText" class="status">No folder selected</div>
+        <div id="metaText" class="meta"></div>
+        <div class="decision-buttons">
+          <button id="keepBtn" class="btn btn-keep" disabled>Keep (K)</button>
+          <button id="skipBtn" class="btn btn-skip" disabled>Skip (S)</button>
+          <button id="doneBtn" class="btn" disabled>Done</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

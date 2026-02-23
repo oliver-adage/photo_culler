@@ -97,7 +97,7 @@ h1 {
   box-shadow: var(--shadow);
   padding: 14px;
   display: grid;
-  grid-template-rows: 1fr auto;
+  grid-template-rows: 1fr auto auto;
   gap: 12px;
   min-height: 0;
   height: 100%;
@@ -166,6 +166,85 @@ h1 {
   justify-content: flex-end;
 }
 
+.filmstrip {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4px 2px 2px;
+  border-top: 1px solid var(--line);
+  min-height: 84px;
+  align-items: center;
+  scroll-behavior: smooth;
+}
+
+.filmstrip:empty::before {
+  content: "Thumbnails appear here after opening a folder";
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.thumb {
+  width: 88px;
+  height: 68px;
+  flex: 0 0 auto;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background: #fff;
+  padding: 2px;
+  cursor: pointer;
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.thumb:hover {
+  border-color: rgba(0, 95, 115, 0.45);
+}
+
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 7px;
+  background: #f2f5f8;
+}
+
+.thumb::after {
+  content: attr(data-index);
+  position: absolute;
+  left: 4px;
+  bottom: 4px;
+  background: rgba(25, 32, 40, 0.74);
+  color: #fff;
+  font-size: 0.7rem;
+  padding: 1px 5px;
+  border-radius: 999px;
+}
+
+.thumb.is-current {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(10, 147, 150, 0.18);
+}
+
+.thumb.is-keep {
+  background: rgba(42, 157, 143, 0.12);
+  border-color: rgba(42, 157, 143, 0.65);
+}
+
+.thumb.is-skip {
+  background: rgba(231, 111, 81, 0.1);
+  border-color: rgba(231, 111, 81, 0.55);
+}
+
+.thumb.is-current.is-keep {
+  box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.22);
+}
+
+.thumb.is-current.is-skip {
+  box-shadow: 0 0 0 3px rgba(231, 111, 81, 0.22);
+}
+
 .btn {
   border: 1px solid transparent;
   border-radius: 12px;
@@ -190,6 +269,11 @@ h1 {
 
 .btn-primary {
   background: linear-gradient(160deg, var(--accent), var(--accent-2));
+  color: #fff;
+}
+
+#openCameraBtn {
+  background: linear-gradient(160deg, #ca6702, #ee9b00);
   color: #fff;
 }
 
@@ -245,5 +329,14 @@ h1 {
 
   .decision-buttons {
     justify-content: flex-start;
+  }
+
+  .filmstrip {
+    min-height: 76px;
+  }
+
+  .thumb {
+    width: 76px;
+    height: 58px;
   }
 }

@@ -18,6 +18,7 @@
       </div>
       <div class="actions">
         <input id="folderInput" type="file" webkitdirectory directory multiple accept=".jpg,.jpeg,image/jpeg" hidden>
+        <button id="openCameraBtn" class="btn btn-primary">Open Camera</button>
         <button id="openBtn" class="btn btn-primary">Open Folder</button>
         <button id="transferBtn" class="btn">Transfer</button>
         <button id="exitBtn" class="btn btn-danger">Exit</button>
@@ -37,11 +38,15 @@
         <div id="statusText" class="status">No folder selected</div>
         <div id="metaText" class="meta"></div>
         <div class="decision-buttons">
+          <button id="backBtn" class="btn" disabled>Back (←)</button>
+          <button id="undoBtn" class="btn" disabled>Undo (Z)</button>
           <button id="keepBtn" class="btn btn-keep" disabled>Keep (K)</button>
           <button id="skipBtn" class="btn btn-skip" disabled>Skip (S)</button>
           <button id="doneBtn" class="btn" disabled>Done</button>
         </div>
       </div>
+
+      <div id="filmstrip" class="filmstrip" aria-label="Thumbnail filmstrip"></div>
     </section>
   </main>
 

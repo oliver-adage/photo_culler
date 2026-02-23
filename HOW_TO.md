@@ -5,12 +5,17 @@
 From the project folder, run:
 
 ```powershell
-python -m http.server 8000
+python native_server.py
 ```
 
 Open:
 
 - `http://localhost:8000`
+
+Why this server:
+
+- `native_server.py` enables direct Windows camera import (MTP / Explorer-visible devices) via a native bridge.
+- `python -m http.server` is still available for local-folder-only use, but cannot directly browse many cameras in the browser picker.
 
 ## 2. Review photos
 
@@ -21,11 +26,28 @@ Open:
    - **Keep** to mark for transfer
    - **Skip** to ignore
 5. The app auto-advances after each choice.
+6. Optional review helpers:
+   - **Back** to go to previous image
+   - **Undo** to reverse the last keep/skip action and return to that image
+   - Click a thumbnail in the filmstrip to jump directly to an image
+
+### Direct camera import (Windows, recommended for camera connection)
+
+1. Start with `python native_server.py`
+2. Click **Open Camera**
+3. The app will read the connected camera through the Windows shell and import JPEGs from the latest DCIM folder for review
+
+Notes:
+
+- First import can take time (camera speed + number of images)
+- This avoids the browser file picker limitation that may hide cameras even when Explorer can see them
 
 Keyboard shortcuts:
 
 - `K` = Keep
 - `S` = Skip
+- `←` = Back
+- `Z` = Undo last action
 - `Esc` = Exit/Clear session
 
 ## 3. Transfer kept files
@@ -50,7 +72,7 @@ Notes:
 - If `localhost:8000` is busy, run on another port:
 
 ```powershell
-python -m http.server 8080
+python native_server.py --port 8080
 ```
 
 Then open `http://localhost:8080`.

@@ -1,17 +1,27 @@
 import argparse
 import json
 import mimetypes
+import os
 import shutil
+import socket
 import subprocess
+import sys
 import tempfile
 import time
+import webbrowser
 from http import HTTPStatus
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import unquote, urlparse
 
 
-ROOT = Path(__file__).resolve().parent
+def _bundle_root() -> Path:
+    if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+        return Path(getattr(sys, "_MEIPASS"))
+    return Path(__file__).resolve().parent
+
+
+ROOT = _bundle_root()
 SESSIONS_DIR = Path(tempfile.gettempdir()) / "photo_culler_native_sessions"
 SESSIONS_DIR.mkdir(parents=True, exist_ok=True)
 CURRENT_SESSION_DIR: Path | None = None
@@ -458,17 +468,67 @@ class PhotoCullerNativeHandler(SimpleHTTPRequestHandler):
 
 def main():
     parser = argparse.ArgumentParser(description="Photo Culler native server (Windows camera bridge)")
-    parser.add_argument("--port", type=int, default=8000, help="Port to bind (default: 8000)")
+    parser.add_argument("--host", default="127.0.0.1", help="Host to bind (default: 127.0.0.1)")
+    parser.add_argument("--port", default="8000", help="Port to bind, or 'auto' (default: 8000)")
+    parser.add_argument("--no-open-browser", action="store_true", help="Do not auto-open the browser")
     args = parser.parse_args()
 
-    server = ThreadingHTTPServer(("127.0.0.1", args.port), PhotoCullerNativeHandler)
-    print(f"Photo Culler native server running on http://127.0.0.1:{args.port}")
+    host = args.host
+    port = _resolve_bind_port(host, args.port)
+
+    server = ThreadingHTTPServer((host, port), PhotoCullerNativeHandler)
+    url = f"http://{host}:{port}"
+    print(f"Photo Culler native server running on {url}")
+    if not args.no_open_browser:
+        _open_browser_soon(url)
     try:
         server.serve_forever()
     except KeyboardInterrupt:
         pass
     finally:
         server.server_close()
+
+
+def _resolve_bind_port(host: str, port_arg: str) -> int:
+    if str(port_arg).lower() == "auto":
+        preferred = 8000
+        if not _port_in_use(host, preferred):
+            return preferred
+        for port in range(8001, 8101):
+            if not _port_in_use(host, port):
+                return port
+        raise OSError("Could not find a free port in range 8000-8100.")
+
+    requested = int(port_arg)
+    if _port_in_use(host, requested):
+        # Portable UX: automatically fall back instead of failing if default port is busy.
+        if requested == 8000:
+            for port in range(8001, 8101):
+                if not _port_in_use(host, port):
+                    print(f"Port 8000 is busy, using {port} instead.")
+                    return port
+        raise OSError(f"Port {requested} is already in use.")
+    return requested
+
+
+def _port_in_use(host: str, port: int) -> bool:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.settimeout(0.5)
+        return sock.connect_ex((host, port)) == 0
+
+
+def _open_browser_soon(url: str) -> None:
+    # Delay slightly so the server starts listening before browser requests arrive.
+    import threading
+
+    def _open():
+        time.sleep(0.8)
+        try:
+            webbrowser.open(url)
+        except Exception:
+            pass
+
+    threading.Thread(target=_open, daemon=True).start()
 
 
 if __name__ == "__main__":

@@ -30,9 +30,13 @@ Extra functionality
 - Extract the core file name such that I can apply the selection of the jpeg files also in the folder for raw files
 - Add function to transfer Raw files from a separate folder on the camera to a separate folder (not same as jpeg.)
 
-# Current implementation notes (Feb 20, 2026)
+# Current implementation notes (Feb 23, 2026)
 - Slice 1 is currently implemented as a browser-based app in `web/`
-- Start locally with `python -m http.server 8000` and open `http://localhost:8000`
+- Primary local run path is `python native_server.py` (Windows native camera bridge + browser UI)
+- Browser-only fallback for local folders: `python -m http.server 8000`
+- Portable Windows build path is available via PyInstaller (`build_portable.ps1`)
+- GitHub Actions builds a Windows portable artifact on every push
+- GitHub Actions publishes a release asset automatically on version tags (`v*`)
 - Legacy desktop prototype remains in `app.py` (not primary path)
 
 # Development workflow (Git)
@@ -50,8 +54,16 @@ Extra functionality
 2. Create a feature branch
 3. Implement one small, testable change
 4. Run app locally and test the affected flow
-5. Commit with a clear message
-6. Push branch and merge into `main`
+5. If relevant, run a local portable build (`.\build_portable.ps1`)
+6. Commit with a clear message
+7. Push branch (CI builds Windows portable artifact automatically)
+8. Merge into `main`
+
+## CI / release workflow
+- Every push triggers GitHub Actions build: `Build Portable Windows App`
+- Output is a downloadable workflow artifact (`PhotoCuller-windows-portable-<sha>.zip`)
+- Version tags (for example `v0.1.0`) also publish a GitHub Release with the portable zip attached
+- Friends/non-developers should install from GitHub Releases, not from source
 
 ## Commit message style (simple)
 - `feat: add resume state file for selections`
@@ -63,6 +75,7 @@ Extra functionality
 - Prefer small merges over large batches
 - Merge only when the app still supports the full Slice 1 flow
 - If a feature is partial, hide it behind UI text/disabled button rather than breaking the current flow
+- Check CI portable build result before merging when packaging/runtime behavior changed
 
 # Definition of done (per slice)
 ## Slice 1 done when
@@ -88,6 +101,8 @@ Extra functionality
 - Duplicate filenames in destination are handled safely
 - Transfer to destination folder succeeds in Chrome/Edge
 - Browser fallback download path works when folder write is unavailable
+- Native camera import works on at least one Windows MTP camera/card device
+- Portable build (`PhotoCuller.exe`) launches and opens browser on a clean machine
 
 # Recommended roadmap (next steps)
 ## Priority order
@@ -141,6 +156,7 @@ Extra functionality
 - Dry-run transfer mode (preview without copying)
 - Duplicate detection warning in destination (same name + size/date)
 - Optional checksum verification after transfer (slower, safer)
+- Portable installer UX improvements (single-click launcher, app icon, signed executable)
 
 ## Performance and scale
 - Image preloading for next/previous file to reduce latency
@@ -166,4 +182,5 @@ Extra functionality
 - Should resume state be stored only in browser (per device/browser) or also in a portable file next to images?
 - Is the app intended to be browser-only long term, or should a packaged desktop app return later?
 - Is Windows the primary target platform for camera auto-detection?
+- Should macOS/Linux be supported later (likely requires a different native camera bridge)?
 - Should transfer preserve original folder structure or flatten into one destination folder by default?

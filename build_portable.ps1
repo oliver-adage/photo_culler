@@ -20,6 +20,8 @@ Write-Host "Building portable Windows app (PyInstaller onedir)..."
   --clean `
   --onedir `
   --name PhotoCuller `
+  --icon "assets\\app.ico" `
+  --version-file "packaging\\windows-version-info.txt" `
   --add-data "index.html;." `
   --add-data "web;web" `
   native_server.py

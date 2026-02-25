@@ -37,6 +37,7 @@ If port `8000` is busy, `native_server.py` will automatically choose another por
 Output:
 
 - `dist\PhotoCuller\PhotoCuller.exe`
+- Includes app icon (`assets/app.ico`) and Windows file metadata (`packaging/windows-version-info.txt`)
 
 ## CI / Release
 
@@ -60,6 +61,8 @@ Output:
 - `web/app.js` - app logic
 - `native_server.py` - Windows native camera bridge + static server
 - `build_portable.ps1` - local Windows portable build script (PyInstaller)
+- `assets/app.ico` / `assets/app-icon.svg` - Windows app icon (ICO + editable source SVG)
+- `packaging/windows-version-info.txt` - Windows executable version metadata for PyInstaller
 - `requirements-build.txt` - build-time dependency list (PyInstaller)
 - `.github/workflows/build-portable-windows.yml` - builds portable artifact on every push; publishes release asset on `v*` tags
 - `CONTRIBUTING.md` - workflow, branching, CI build notes

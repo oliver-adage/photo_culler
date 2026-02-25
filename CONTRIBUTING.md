@@ -36,6 +36,7 @@ python native_server.py
 Output:
 
 - `dist\PhotoCuller\PhotoCuller.exe`
+- Build uses `assets/app.ico` and `packaging/windows-version-info.txt`
 
 ## CI builds
 
